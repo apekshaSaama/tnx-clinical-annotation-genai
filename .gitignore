@@ -1,0 +1,22 @@
+# Secrets
+.env
+config/auth_config.json
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+.ner_venv/
+
+# Runtime output
+.temp_processing_*/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

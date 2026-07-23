@@ -1,0 +1,15 @@
+# Core app
+streamlit==1.58.0
+pandas==3.0.3
+python-dotenv==1.2.2
+jsonschema==4.26.0
+
+# Optional: IAA token-level Cohen's kappa in generate_iaa.py
+scikit-learn==1.9.0
+
+# Optional: Langfuse tracing/observability in llm/observability.py.
+# The whole llm layer degrades to a no-op if this isn't installed or no keys are set.
+langfuse==4.14.0
+
+# Dev / tests
+pytest

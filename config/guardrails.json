@@ -1,0 +1,6 @@
+{
+  "_comment": "Cost & governance guardrails owned by the LLMRouter (CLAUDE.md Rule #1).",
+  "session_token_cap": 2000000,
+  "default_environment": "sandbox",
+  "warn_if_sandbox_in_prod": true
+}

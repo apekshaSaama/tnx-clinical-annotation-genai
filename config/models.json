@@ -1,0 +1,64 @@
+{
+  "_comment": "Config-over-code: adding a provider or model, or reordering the fallback chain, is a config edit — never an orchestrator code change (CLAUDE.md Rule #5 / Pattern 5).",
+  "providers": {
+    "azure": {
+      "type": "azure_openai",
+      "model_class": "reasoning",
+      "max_tokens": 16384,
+      "token_param": "max_completion_tokens",
+      "temperature": 0,
+      "timeout": 60,
+      "retries": 3,
+      "backoff_base_seconds": 2.0,
+      "supports_json_mode": true,
+      "prompt_suffix": "",
+      "model_version": "azure_openai_clinical_ner",
+      "prompt_cache_key": "clinical-ner-guideline-v3",
+      "prompt_cache_retention": "24h"
+    },
+    "gemini": {
+      "type": "gemini",
+      "model_class": "reasoning",
+      "max_tokens": 16384,
+      "token_param": "max_tokens",
+      "temperature": null,
+      "timeout": 300,
+      "retries": 3,
+      "backoff_base_seconds": 2.0,
+      "supports_json_mode": true,
+      "prompt_suffix": "\nUse concise but accurate extraction.",
+      "model_version": "gemini_clinical_ner",
+      "prompt_cache_enabled": true,
+      "prompt_cache_ttl": "3600s"
+    },
+    "anthropic": {
+      "type": "anthropic",
+      "model_class": "reasoning",
+      "max_tokens": 16384,
+      "token_param": "max_tokens",
+      "temperature": null,
+      "timeout": 300,
+      "retries": 3,
+      "backoff_base_seconds": 2.0,
+      "supports_json_mode": false,
+      "prompt_suffix": "\nUse concise but accurate extraction.",
+      "model_version": "anthropic_clinical_ner",
+      "cache_system_prompt": true
+    }
+  },
+  "tasks": {
+    "clinical_ner": {
+      "chain": ["azure", "anthropic"],
+      "temperature": null
+    }
+  },
+  "model_aliases": {
+    "azure": "azure",
+    "gpt": "azure",
+    "openai": "azure",
+    "anthropic": "anthropic",
+    "claude": "anthropic",
+    "gemini": "gemini",
+    "google": "gemini"
+  }
+}

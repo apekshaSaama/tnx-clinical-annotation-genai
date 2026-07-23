@@ -1,0 +1,9 @@
+{
+  "_comment": "USD per 1,000,000 tokens, keyed by the model string each provider reports (Azure deployment name or Anthropic model id). The router computes cost_details from these and pushes them to Langfuse so cost populates even for custom deployment names Langfuse's own registry doesn't know. PLACEHOLDER RATES — verify against your provider contract and keep current. Models absent here get no router-computed cost (Langfuse's built-in registry still applies if it recognizes the model).",
+  "models": {
+    "claude-sonnet-5": {"input_per_1m": 3.0, "output_per_1m": 15.0},
+    "gpt-5.2": {"input_per_1m": 1.25, "output_per_1m": 10.0},
+    "gpt-4o": {"input_per_1m": 2.5, "output_per_1m": 10.0},
+    "gemini-3.6-flash": {"input_per_1m": 0.30, "output_per_1m": 2.50}
+  }
+}
