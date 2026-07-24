@@ -61,6 +61,7 @@ AUTH_CONFIG_PATH = ROOT / "config" / "auth_config.json"
 MODEL_OPTIONS = {
     "OpenAI (Azure)": "openai",
     "Claude (Anthropic)": "claude",
+    "Gemini (Google)": "gemini",
 }
 
 st.set_page_config(page_title="Clinical NER Pipeline", layout="wide")
@@ -71,6 +72,7 @@ if "annotation_complete" not in st.session_state:
     st.session_state.gt_path = ""
     st.session_state.iaa_report_text = ""
     st.session_state.iaa_csv_text = ""
+    st.session_state.model_name = ""
     st.session_state.show_iaa = False
 
 if "authenticated" not in st.session_state:
@@ -594,6 +596,16 @@ if submitted:
     with open(guideline_file, "wb") as f:
         f.write(uploaded_guideline.getbuffer())
 
+    # A new guideline may change how prompts should render, so publish the
+    # bundled prompts/*.txt to Langfuse (no-op if Langfuse isn't configured).
+    sync_completed = subprocess.run(
+        [sys.executable, "-m", "llm.sync_prompts"],
+        capture_output=True, text=True, cwd=str(ROOT),
+    )
+    if sync_completed.returncode != 0:
+        st.warning(f"Prompt sync skipped: {sync_completed.stderr.strip() or sync_completed.stdout.strip()}")
+
+
     # Save uploaded note files to disk
     for uploaded_note in uploaded_notes:
         file_name = Path(uploaded_note.name).name
@@ -631,6 +643,7 @@ if submitted:
     else:
         st.session_state.annotation_complete = True
         st.session_state.annotation_output_folder = str(output_folder)
+        st.session_state.model_name = model_name
         st.success("Annotation completed")
 
 # --- SECTION 2: IAA CALCULATION FORM ---
@@ -696,8 +709,9 @@ if st.session_state.annotation_complete:
 
             # Execute IAA generation script ONLY if pred_file was successfully assigned
             if pred_file is not None:
-                iaa_report_file = output_folder / f"iaa_chunks_{gt_file.stem}_claude.csv"
-                csv_file = output_folder / f"iaa_{gt_file.stem}_claude.csv"
+                model = st.session_state.model_name
+                iaa_report_file = output_folder / f"iaa_chunks_evaluation_{model}.csv"
+                csv_file = output_folder / f"iaa_metric_{model}.csv"
                 
                 cmd = [
                     sys.executable,
