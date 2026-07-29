@@ -22,7 +22,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-ALLOWED_DOMAINS: Final[tuple[str, ...]] = ("@sama.com", "@saama.com", "@TriNetX.com")
+ALLOWED_DOMAINS: Final[tuple[str, ...]] = ("@saama.com", "@trinetx.com")
 
 
 def normalize_email(email: str) -> str:
@@ -234,7 +234,7 @@ def render_login_page() -> None:
                     st.session_state.auth_message = ""
                 elif not is_allowed_email(normalized_email):
                     st.session_state.auth_error = (
-                        "Access is restricted to @Saama.com or @TriNetX.com email addresses."
+                        "Access is restricted to @saama.com or @trinetx.com email addresses."
                     )
                     st.session_state.auth_message = ""
                 else:
