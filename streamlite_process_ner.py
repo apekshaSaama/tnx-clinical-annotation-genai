@@ -21,6 +21,10 @@ ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from generate_snippet import generate_snippets
 
 ALLOWED_DOMAINS: Final[tuple[str, ...]] = ("@saama.com", "@trinetx.com")
 
@@ -586,6 +590,7 @@ if submitted:
     # Setup project-local temp processing folders
     temp_dir = ROOT / f".temp_processing_{timestamp}"
     notes_folder = temp_dir / "notes"
+    snippets_folder = temp_dir / "snippets"
     output_folder = temp_dir / "output"
 
     notes_folder.mkdir(parents=True, exist_ok=True)
@@ -613,13 +618,17 @@ if submitted:
         with open(note_file_path, "wb") as f:
             f.write(uploaded_note.getbuffer())
 
+    # Extract smoking-related snippets from the uploaded notes; the extractor
+    # runs on these snippets instead of the full notes.
+    generate_snippets(str(notes_folder), str(snippets_folder))
+
     # Run extraction subprocess
     with st.spinner("Running clinical NER extraction..."):
         cmd = [
             sys.executable,
             str(ROOT / "clinical_ner_extractor.py"),
             "--input_folder",
-            str(notes_folder),
+            str(snippets_folder),
             "--guideline",
             str(guideline_file),
             "--output_folder",
